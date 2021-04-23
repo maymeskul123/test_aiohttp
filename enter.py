@@ -1,6 +1,7 @@
 import functools
 import json
 import time
+import client_mysql
 
 from aiohttp import web
 
@@ -49,5 +50,6 @@ def init() -> web.Application:
     app.router.add_get("/", index)
     app.router.add_post("/send", MyView)
     return app
+client = client_mysql.Client_MySQL()
 
-web.run_app(init())
+#web.run_app(init())
