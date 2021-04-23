@@ -1,25 +1,14 @@
-import functools
-import json
 import time
 import client_mysql
 
 from aiohttp import web
 
 class MyView(web.View):
-    async def get(self) -> web.StreamResponse:
-        return web.json_response(
-            {
-                "method": self.request.method,
-                "args": dict(self.request.rel_url.query),
-                "headers": dict(self.request.headers),
-            },
-            dumps=functools.partial(json.dumps, indent=4),
-        )
-
     async def post(self) -> web.StreamResponse:
         data = await self.request.post()
+        client.insert(data)
         time.sleep(10)
-        return web.json_response("Ok")
+        return web.json_response("Data added to database")
 
 
 async def index(request: web.Request) -> web.StreamResponse:
@@ -50,6 +39,9 @@ def init() -> web.Application:
     app.router.add_get("/", index)
     app.router.add_post("/send", MyView)
     return app
-client = client_mysql.Client_MySQL()
 
-#web.run_app(init())
+
+
+
+client = client_mysql.Client_MySQL('test', 'password')
+web.run_app(init())
